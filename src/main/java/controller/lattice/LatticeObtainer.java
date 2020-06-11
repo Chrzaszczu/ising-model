@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class LatticeObtainer
 {
-    public static List<Spin> obtainLattice(GenerationType generator, int size)
+    public static List<Spin> obtainLattice(GenerationType generator, int size) throws IllegalArgumentException
     {
         switch(generator)
         {
