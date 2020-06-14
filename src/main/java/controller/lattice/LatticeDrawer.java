@@ -8,12 +8,15 @@ import model.Index;
 import model.Spin;
 import model.enums.State;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LatticeDrawer
 {
     private static final int MAX_WIDTH = 400;
 
+    private Map<Spin, Rectangle> rectangles;
     private BorderPane borderPane;
     private List<Spin> spins;
     private Pane pane;
@@ -36,6 +39,11 @@ public class LatticeDrawer
         drawLattice();
     }
 
+    public Map<Spin, Rectangle> getRectangles()
+    {
+        return rectangles;
+    }
+
     private void preparePane()
     {
         pane = new Pane();
@@ -45,6 +53,7 @@ public class LatticeDrawer
 
     private void drawLattice()
     {
+        rectangles = new LinkedHashMap<>();
         final double spinWidth = (MAX_WIDTH / Math.sqrt(spins.size()));
 
         spins.forEach(spin -> prepareSpin(spin, spinWidth));
@@ -53,7 +62,9 @@ public class LatticeDrawer
 
     private void prepareSpin(Spin spin, double spinWidth)
     {
-        pane.getChildren().add(prepareRectangle(spin, spinWidth));
+        Rectangle rectangle = prepareRectangle(spin, spinWidth);
+        pane.getChildren().add(rectangle);
+        rectangles.put(spin, rectangle);
     }
 
     private Rectangle prepareRectangle(Spin spin, double spinWidth)
@@ -65,7 +76,6 @@ public class LatticeDrawer
                 Math.ceil(spinWidth),
                 Math.ceil(spinWidth));
         setRectangleColor(rectangle, spin);
-
         return rectangle;
     }
 

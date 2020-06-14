@@ -1,5 +1,6 @@
 package controller;
 
+import controller.algorithm.MonteCarlo;
 import controller.lattice.LatticeDrawer;
 import controller.lattice.LatticeObtainer;
 import controller.lattice.LatticeParametersObtainer;
@@ -26,16 +27,20 @@ public class MainController implements Initializable
     @FXML private BorderPane borderPane;
     @FXML private BorderPane latticeBorderPane;
     @FXML private TextField widthTextField;
-    @FXML private TextField heightTextField;
     @FXML private TextField exchangeCouplingTextField;
     @FXML private TextField temperatureTextField;
     @FXML private TextField monteCarloCyclesTextField;
 
     private LatticeParameters latticeParameters;
+    private LatticeDrawer drawer;
+    private List<Spin> spins;
+    private MonteCarlo monteCarlo;
+    private Thread computationThread;
 
     public void initialize(URL location, ResourceBundle resources)
     {
-        drawLattice(new LinkedList<>());
+        spins = new LinkedList<>();
+        drawLattice();
     }
 
     @FXML
@@ -67,17 +72,28 @@ public class MainController implements Initializable
     {
         LatticeParametersObtainer obtainer = new LatticeParametersObtainer(this);
         latticeParameters = obtainer.obtainLatticeParameters();
-        drawLattice(LatticeObtainer.obtainLattice(GenerationType.RANDOM, latticeParameters.getSize()));
+        spins = LatticeObtainer.obtainLattice(GenerationType.RANDOM, latticeParameters.getSize());
+        drawLattice();
     }
 
     public void onStartClicked(MouseEvent mouseEvent)
     {
-        throw new IllegalArgumentException("Implement me!");
+        monteCarlo = new MonteCarlo(latticeParameters, spins, drawer.getRectangles());
+
+        if(computationThread == null)
+        {
+            computationThread = new Thread(() ->
+            {
+                monteCarlo.start();
+                computationThread = null;
+            });
+            computationThread.start();
+        }
     }
 
     public void onStopClicked(MouseEvent mouseEvent)
     {
-        throw new IllegalArgumentException("Implement me!");
+        monteCarlo.active = false;
     }
 
     public void onResetClicked(MouseEvent mouseEvent)
@@ -85,9 +101,9 @@ public class MainController implements Initializable
         throw new IllegalArgumentException("Implement me!");
     }
 
-    private void drawLattice(List<Spin> spins)
+    private void drawLattice()
     {
-        LatticeDrawer drawer = new LatticeDrawer(latticeBorderPane, spins);
+        drawer = new LatticeDrawer(latticeBorderPane, spins);
         drawer.draw();
     }
 }

@@ -1,13 +1,14 @@
 package controller.algorithm;
 
-import controller.lattice.LatticeDrawer;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import model.LatticeParameters;
 import model.Spin;
 import model.enums.State;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class MonteCarlo
 {
@@ -15,16 +16,18 @@ public class MonteCarlo
     private static final int NUMBER_OF_SPINS_TO_ROTATE = 3;
 
     private LatticeParameters parameters;
+    private Map<Spin, Rectangle> rectangles;
     private List<Spin> spins;
 
     private Hamiltonian hamiltonian;
 
     public boolean active;
 
-    public MonteCarlo(LatticeParameters parameters, List<Spin> spins)
+    public MonteCarlo(LatticeParameters parameters, List<Spin> spins, Map<Spin, Rectangle> rectangles)
     {
         this.parameters = parameters;
         this.spins = spins;
+        this.rectangles = rectangles;
     }
 
     public void start()
@@ -85,10 +88,12 @@ public class MonteCarlo
         if(spin.getState() == State.UP)
         {
             spin.setState(State.DOWN);
+            rectangles.get(spin).setFill(Color.RED);
         }
         else
         {
             spin.setState(State.UP);
+            rectangles.get(spin).setFill(Color.BLUE);
         }
     }
 

@@ -17,7 +17,7 @@ public class Hamiltonian
 
     public float obtainTotalEnergy(float externalField)
     {
-        return obtainExchangeEnergy() + obtainExternalFieldEnergy(externalField);
+        return -obtainExchangeEnergy() -obtainExternalFieldEnergy(externalField);
     }
 
     public float obtainExchangeEnergy()
